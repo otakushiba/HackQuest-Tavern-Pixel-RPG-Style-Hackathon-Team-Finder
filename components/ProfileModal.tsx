@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Adventurer, TimeCommitment } from '../types';
+import { skillDescriptions } from '../data/skillDescriptions';
 
 interface ProfileModalProps {
   adventurer: Adventurer;
@@ -111,9 +112,19 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ adventurer, onClose, onRecr
               <h3 className="font-pixel text-[#f4b41b] text-sm mb-4 border-b-2 border-[#3e2731] pb-2">INVENTORY (SKILLS)</h3>
               <div className="flex flex-wrap gap-2">
                 {adventurer.skills.map(skill => (
-                  <span key={skill} className="bg-[#1d1016] border-2 border-[#733e39] text-[#f4b41b] text-xs px-3 py-1 font-pixel uppercase hover:bg-[#733e39] hover:text-white transition-colors cursor-default">
-                    {skill}
-                  </span>
+                  <div key={skill} className="relative group/skill">
+                    <span className="bg-[#1d1016] border-2 border-[#733e39] text-[#f4b41b] text-xs px-3 py-1 font-pixel uppercase hover:bg-[#733e39] hover:text-white transition-colors cursor-help inline-block">
+                      {skill}
+                    </span>
+                    {/* Tooltip */}
+                    <div className="invisible group-hover/skill:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 z-30 pointer-events-none transition-all duration-200">
+                      <div className="bg-[#1a1016] pixel-border p-3 text-[10px] text-[#e6e6e6] leading-tight shadow-2xl relative">
+                        {skillDescriptions[skill] || "A mysterious technique of the modern age."}
+                        {/* Tooltip Arrow */}
+                        <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-8 border-x-transparent border-t-8 border-t-[#733e39]"></div>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>

@@ -1,0 +1,27 @@
+
+export const skillDescriptions: Record<string, string> = {
+  'React': 'Enchants interfaces with reactive components that update like magic.',
+  'Three.js': 'Bends the third dimension to create immersive holographic artifacts.',
+  'Tailwind': 'Cast rapid style-spells with utility enchantments for quick crafting.',
+  'Node.js': 'The powerful engine driving the server-side underworld.',
+  'PostgreSQL': 'A sturdy relational vault for preserving the party\'s collected data.',
+  'Redis': 'Lightning-fast memory storage for rapid retrieval of ephemeral spirits.',
+  'Figma': 'Forges the visual blueprints of your quest before the first brick is laid.',
+  'Aseprite': 'The sacred tool for crafting the ancient pixels of the realm.',
+  'Blender': 'Sculpts 3D relics and inhabitants from the digital ether.',
+  'Agile': 'A strategic formation for swift, iterative movements through the project.',
+  'Jira': 'The cursed scroll of tasks that must be banished before the deadline.',
+  'Strategy': 'The grand master plan to navigate the perils of the hackathon dungeon.',
+  'Storytelling': 'Beguiles the judges with a legendary tale of your project\'s triumph.',
+  'Canva': 'Spins together quick visual scrolls for the final presentation.',
+  'Public Speaking': 'A powerful aura that commands the room during the final pitch.',
+  'Go': 'A swift and concurrent tongue for building highly performant spirits.',
+  'Docker': 'Encloses your work in protective boxes for safe travel across environments.',
+  'K8s': 'A legendary spell to command an entire army of containerized minions.',
+  'UX': 'Clears the path for weary travelers through the dense interface forests.',
+  'Prototyping': 'Creates a convincing illusion of the final treasure for early testing.',
+  'User Research': 'Consults the village folk to find the true needs of the people.',
+  'TypeScript': 'Adds a layer of armor to your code, deflecting common bugs and curses.',
+  'Next.js': 'The high road to the web, pre-paved for speed and discovery.',
+  'Web3': 'Forges decentralized scrolls in the trustless wild lands beyond the wall.'
+};

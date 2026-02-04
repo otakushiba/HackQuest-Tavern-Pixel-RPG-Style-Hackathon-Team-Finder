@@ -1,6 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { Adventurer, TimeCommitment } from '../types';
+import { skillDescriptions } from '../data/skillDescriptions';
 
 interface AdventurerCardProps {
   adventurer: Adventurer;
@@ -88,9 +89,19 @@ const AdventurerCard: React.FC<AdventurerCardProps> = ({ adventurer, onRecruit, 
         </p>
         <div className="flex flex-wrap gap-1.5">
           {adventurer.skills.map(skill => (
-            <span key={skill} className="bg-[#1d1016] border border-[#733e39] text-[#f4b41b] text-[10px] px-2 py-0.5 font-pixel uppercase">
-              {skill}
-            </span>
+            <div key={skill} className="relative group/skill">
+              <span className="bg-[#1d1016] border border-[#733e39] text-[#f4b41b] text-[10px] px-2 py-0.5 font-pixel uppercase cursor-help transition-colors hover:bg-[#733e39] hover:text-white">
+                {skill}
+              </span>
+              {/* Tooltip */}
+              <div className="invisible group-hover/skill:visible absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 z-30 pointer-events-none transition-all duration-200">
+                <div className="bg-[#1a1016] pixel-border p-2 text-[10px] text-[#e6e6e6] leading-tight shadow-2xl relative">
+                  {skillDescriptions[skill] || "A mysterious technique of the modern age."}
+                  {/* Tooltip Arrow */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 border-x-8 border-x-transparent border-t-8 border-t-[#733e39]"></div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
