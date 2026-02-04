@@ -6,14 +6,20 @@ import Sidebar from './components/Sidebar';
 import AdventurerCard from './components/AdventurerCard';
 import PartyPanel from './components/PartyPanel';
 import TavernBackground from './components/TavernBackground';
+import ProfileModal from './components/ProfileModal';
+import QuestBoard from './components/QuestBoard';
 import { GoogleGenAI } from "@google/genai";
 
+type ViewMode = 'Adventurers' | 'Quests';
+
 const App: React.FC = () => {
+  const [viewMode, setViewMode] = useState<ViewMode>('Adventurers');
   const [selectedRole, setSelectedRole] = useState<Role | 'All'>('All');
   const [selectedGoal, setSelectedGoal] = useState<Goal | 'All'>('All');
   const [party, setParty] = useState<PartyMember[]>([]);
   const [geminiInsight, setGeminiInsight] = useState<string>("Welcome to the HackQuest Tavern, traveler!");
   const [isInsightLoading, setIsInsightLoading] = useState(false);
+  const [viewingAdventurer, setViewingAdventurer] = useState<Adventurer | null>(null);
 
   const filteredAdventurers = useMemo(() => {
     return mockAdventurers.filter(adv => {
@@ -44,7 +50,6 @@ const App: React.FC = () => {
     return Math.min(100, Math.floor(baseScore + countBonus));
   }, [party]);
 
-  // Use Gemini to provide "Tavern Wisdom" or Matchmaking Advice
   const fetchGeminiInsight = async () => {
     if (party.length === 0) return;
     setIsInsightLoading(true);
@@ -83,14 +88,32 @@ const App: React.FC = () => {
       
       {/* Navigation Bar */}
       <nav className="z-10 bg-[#1d1016] border-b-4 border-[#733e39] p-4 flex justify-between items-center shadow-2xl">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#f4b41b] pixel-border flex items-center justify-center">
-            <span className="text-2xl">⚔️</span>
+        <div className="flex items-center gap-8">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#f4b41b] pixel-border flex items-center justify-center">
+              <span className="text-2xl">⚔️</span>
+            </div>
+            <h1 className="font-pixel text-2xl text-[#f4b41b] tracking-wider uppercase">
+              HackQuest Tavern
+            </h1>
           </div>
-          <h1 className="font-pixel text-2xl text-[#f4b41b] tracking-wider uppercase">
-            HackQuest Tavern
-          </h1>
+
+          <div className="flex gap-2">
+            <button 
+              onClick={() => setViewMode('Adventurers')}
+              className={`font-pixel text-xs px-4 py-2 border-2 ${viewMode === 'Adventurers' ? 'bg-[#733e39] border-[#f4b41b] text-white' : 'bg-[#3e2731] border-[#733e39] text-[#8a8a8a] hover:text-white'}`}
+            >
+              ADVENTURERS
+            </button>
+            <button 
+              onClick={() => setViewMode('Quests')}
+              className={`font-pixel text-xs px-4 py-2 border-2 ${viewMode === 'Quests' ? 'bg-[#733e39] border-[#f4b41b] text-white' : 'bg-[#3e2731] border-[#733e39] text-[#8a8a8a] hover:text-white'}`}
+            >
+              QUEST BOARD
+            </button>
+          </div>
         </div>
+        
         <div className="flex gap-4">
           <div className="bg-[#3e2731] px-4 py-1 pixel-border text-[#f4b41b] font-pixel text-sm">
             HACKATHON_V2.5
@@ -102,8 +125,8 @@ const App: React.FC = () => {
       </nav>
 
       <main className="flex-1 flex overflow-hidden z-10 p-4 gap-4">
-        {/* Left Sidebar: Filters */}
-        <div className="w-64 flex flex-col gap-4">
+        {/* Only show Sidebar when in Adventurers view */}
+        <div className={`w-64 flex flex-col gap-4 transition-all duration-300 ${viewMode === 'Quests' ? 'opacity-0 -translate-x-full w-0 invisible' : 'opacity-100 translate-x-0'}`}>
           <Sidebar 
             selectedRole={selectedRole} 
             setSelectedRole={setSelectedRole}
@@ -111,7 +134,6 @@ const App: React.FC = () => {
             setSelectedGoal={setSelectedGoal}
           />
           
-          {/* Tavern Master Insights */}
           <div className="flex-1 bg-[#1a1016] pixel-border p-4 text-[#e6e6e6]">
             <h3 className="font-pixel text-sm mb-4 text-[#f4b41b]">Tavern Wisdom</h3>
             <div className="bg-[#3e2731] p-3 border-2 border-[#733e39] text-lg leading-tight relative h-[120px] overflow-y-auto">
@@ -124,27 +146,32 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        {/* Central Content: Adventurer Grid */}
         <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
-            {filteredAdventurers.map((adv) => (
-              <AdventurerCard 
-                key={adv.id} 
-                adventurer={adv} 
-                onRecruit={() => addToParty(adv)}
-                isRecruited={!!party.find(p => p.id === adv.id)}
-              />
-            ))}
-            {filteredAdventurers.length === 0 && (
-              <div className="col-span-full h-64 flex items-center justify-center flex-col text-[#f4b41b] font-pixel">
-                <span className="text-4xl mb-4">👻</span>
-                <p>No heroes found for this quest...</p>
-              </div>
-            )}
-          </div>
+          {viewMode === 'Adventurers' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {filteredAdventurers.map((adv) => (
+                <AdventurerCard 
+                  key={adv.id} 
+                  adventurer={adv} 
+                  onRecruit={() => addToParty(adv)}
+                  onViewDetails={() => setViewingAdventurer(adv)}
+                  isRecruited={!!party.find(p => p.id === adv.id)}
+                />
+              ))}
+              {filteredAdventurers.length === 0 && (
+                <div className="col-span-full h-64 flex items-center justify-center flex-col text-[#f4b41b] font-pixel">
+                  <span className="text-4xl mb-4">👻</span>
+                  <p>No heroes found for this quest...</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="h-full animate-in zoom-in-95 fade-in duration-500">
+              <QuestBoard />
+            </div>
+          )}
         </div>
 
-        {/* Right Sidebar: Party Panel */}
         <div className="w-80">
           <PartyPanel 
             party={party} 
@@ -154,9 +181,18 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Footer / Status Bar */}
+      {/* Modal Overlay */}
+      {viewingAdventurer && (
+        <ProfileModal 
+          adventurer={viewingAdventurer}
+          onClose={() => setViewingAdventurer(null)}
+          onRecruit={() => addToParty(viewingAdventurer)}
+          isRecruited={!!party.find(p => p.id === viewingAdventurer.id)}
+        />
+      )}
+
       <footer className="z-10 bg-[#1d1016] border-t-4 border-[#733e39] p-2 px-6 flex justify-between text-[#8a8a8a] font-pixel text-xs">
-        <div>STATUS: READY TO HACK</div>
+        <div>STATUS: {viewMode === 'Adventurers' ? 'SEARCHING FOR HEROES' : 'SCANNING THE NOTICE BOARD'}</div>
         <div className="flex gap-6">
           <span>LATENCY: 16MS</span>
           <span>LOCATION: HACKER_CAVE_B1</span>
