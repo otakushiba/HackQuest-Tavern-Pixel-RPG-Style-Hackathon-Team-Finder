@@ -41,7 +41,7 @@ In the world of hackathons, building a team is like forming a party for a legend
 
 1. **Clone the repository**
 2. **Install dependencies**: `npm install`
-3. **Set up your environment**: Ensure you have a valid Gemini API Key.
+3. **Set up your environment**: Ensure you have a valid `API_KEY` set in your environment variables.
 4. **Run the development server**: `npm run dev`
 
 *Built for the Hackathon community to make team-building an adventure.*
